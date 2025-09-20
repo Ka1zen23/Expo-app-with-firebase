@@ -33,20 +33,19 @@ If you haven't used Expo before, follow this [expo documentation](https://docs.e
 ```
 
 #### Generate Firebase credentials
-1. Got to [firebase](https://firebase.google.com/)
+1. Go to [firebase](https://firebase.google.com/)
 2. Go to console
 3. Add Project
 4. Enter project name. Skip Analytics. Create Project
 5. Click Project Settings (gear icon) in the top left
 6. Scroll to "Your apps". Select the web app icon.
 7. Input app nickname, hit "register".
-8. Copy and Paste firebaseConfig variables into FirebaseConfig.ts in the root directory of the repository.
+8. Copy and Paste FirebaseConfig variables into FirebaseConfig.ts in the root directory of the repository.
 
 #### Turn on Firebase Authentication
-1. Go to Firebase console
-2. On left in product categories, click "Build" -> "Authentication"
-3. Click "Get Started"
-4. Enable Email/Password. Click Save.
+1. Go to Firebase console, under the "Build" section on the left menu, click Authentication.
+2. Click "Get Started"
+3. Enable Email/Password. Click Save.
 
 #### Turn on Firestore
 1. In the Firebase console, under the "Build" section on the left menu, click Firestore Database.
