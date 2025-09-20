@@ -1,0 +1,57 @@
+const tintColorLight = '#2f95dc';
+const tintColorDark = '#fff';
+
+export default {
+  light: {
+    primary: '#007AFF',
+    secondary: '#5856D6',
+    background: '#F5F5F5',
+    surface: '#FFFFFF',
+    card: '#FFFFFF',
+    text: '#000000',
+    textSecondary: '#666666',
+    border: '#E5E5E5',
+    success: '#34C759',
+    warning: '#FF9500',
+    error: '#FF3B30',
+    icon: '#687076',
+    tabIconDefault: '#687076',
+    tabIconSelected: tintColorLight,
+  },
+  dark: {
+    primary: '#0A84FF',
+    secondary: '#5E5CE6',
+    background: '#000000',
+    surface: '#1C1C1E',
+    card: '#2C2C2E',
+    text: '#FFFFFF',
+    textSecondary: '#8E8E93',
+    border: '#38383A',
+    success: '#30D158',
+    warning: '#FF9F0A',
+    error: '#FF453A',
+    icon: '#9BA1A6',
+    tabIconDefault: '#9BA1A6',
+    tabIconSelected: tintColorDark,
+  },
+};
+
+export const ColorPalette = {
+  primary: '#20AB6E',
+  lime: '#D7FFD4',
+  pink: '#F655FF',
+  brown: '#29271D',
+  sky: '#E5EDFF',
+  teal: '#0E4D45',
+  yellow: '#FCBB80',
+  orange: '#EF580B',
+  red: '#FF3B30',
+  blue: '#0000FA',
+  green: '#172E15',
+  light: '#FFFCFF',
+  grey: '#242026',
+  greyLight: '#B8B3BA',
+  input: '#EEE9F0',
+  selected: '#F7F2F9',
+  dark: '#2F2D32',
+}
