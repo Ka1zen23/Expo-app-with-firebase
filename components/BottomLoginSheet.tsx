@@ -11,7 +11,7 @@ const BottomLoginSheet = () => {
   const { bottom }  = useSafeAreaInsets();
   return (
     <View style={[styles.container, { paddingBottom: bottom }]}>
-      {Platform.OS === 'ios' && (
+      {Platform.OS == 'ios' && (
       <TouchableOpacity style={[defaultStyles.btn, styles.btnLight]}>
         <Ionicons name="logo-apple" size={14} style={styles.btnIcon} />
         <Text style={styles.btnLightText}>Continue with Apple</Text>
@@ -78,6 +78,5 @@ const styles = StyleSheet.create({
     borderColor: ColorPalette.grey,
   }
 })
-
 
 export default BottomLoginSheet
