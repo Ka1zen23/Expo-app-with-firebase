@@ -21,7 +21,6 @@ const PROFILE_IMAGE_SIZE = 150;
 const BORDER_WIDTH = 3;
 
 export default function ProfileScreen() {
-  // All hooks must be called at the top level
   const { 
     profileImage, 
     setProfileImage, 
@@ -33,29 +32,79 @@ export default function ProfileScreen() {
   } = useUserProfile();
   const colorScheme = useColorScheme();
 
-  // Memoize theme colors to prevent unnecessary recalculations
   const colors = useMemo(() => ({
     border: Colors[colorScheme ?? 'light'].border,
     primary: Colors[colorScheme ?? 'light'].primary,
     text: Colors[colorScheme ?? 'light'].text,
     background: Colors[colorScheme ?? 'light'].background,
     card: Colors[colorScheme ?? 'light'].card || Colors[colorScheme ?? 'light'].background,
+    secondaryText: colorScheme === 'dark' ? '#8E8E93' : '#666',
+    chevron: colorScheme === 'dark' ? '#48484A' : '#C7C7CC',
+    shadow: colorScheme === 'dark' ? Colors[colorScheme].text : '#000',
+    cameraOverlayBorder: colorScheme === 'dark' ? '#1c1c1e' : 'white',
   }), [colorScheme]);
+
+  // Dynamic styles
+  const dynamicStyles = useMemo(() => StyleSheet.create({
+    container: {
+      backgroundColor: colors.background,
+    },
+    loadingText: {
+      color: colors.text,
+    },
+    profileCard: {
+      backgroundColor: colors.card,
+      shadowColor: colors.shadow,
+    },
+    profilePictureContainer: {
+      borderColor: colors.border,
+    },
+    cameraOverlay: {
+      backgroundColor: colors.primary,
+      borderColor: colors.cameraOverlayBorder,
+    },
+    profileTitle: {
+      color: colors.text,
+    },
+    profileSubtitle: {
+      color: colors.secondaryText,
+    },
+    uploadingText: {
+      color: colors.primary,
+    },
+    profileOptions: {
+      backgroundColor: colors.card,
+      ...Platform.select({
+        ios: { shadowColor: colors.shadow },
+        android: {},
+      }),
+    },
+    optionTitle: {
+      color: colors.text,
+    },
+    optionSubtitle: {
+      color: colors.secondaryText,
+    },
+    chevron: {
+      color: colors.chevron,
+    },
+    optionItemBorder: {
+      borderBottomColor: colors.border,
+    },
+  }), [colors]);
 
   const user = FIREBASE_AUTH.currentUser;
 
-  // Safe early return after all hooks are declared
   if (!user) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <View style={styles.loadingContainer}>
-          <Text style={[styles.loadingText, { color: colors.text }]}>Please sign in</Text>
+      <View style={[staticStyles.container, dynamicStyles.container]}>
+        <View style={staticStyles.loadingContainer}>
+          <Text style={[staticStyles.loadingText, dynamicStyles.loadingText]}>Please sign in</Text>
         </View>
       </View>
     );
   }
 
-  // User-dependent values after the check
   const displayName = userName || user?.displayName || user?.email?.split('@')[0] || 'User';
   const displayEmail = userEmail || user?.email || 'user@example.com';
 
@@ -87,7 +136,6 @@ export default function ProfileScreen() {
         } catch (error) {
           console.error('Profile image upload error:', error);
           
-          // More specific error messages based on error type
           let errorMessage = 'Failed to upload profile picture. Please try again.';
           if (error instanceof Error) {
             if (error.message.includes('storage/unknown')) {
@@ -111,27 +159,21 @@ export default function ProfileScreen() {
     
     switch (optionKey) {
       case 'editProfile':
-        // TODO: Navigate to edit profile screen
         Alert.alert('Coming Soon', 'Edit profile feature will be available soon!');
         break;
       case 'notifications':
-        // TODO: Navigate to notifications settings
         Alert.alert('Coming Soon', 'Notification settings will be available soon!');
         break;
       case 'paymentMethods':
-        // TODO: Navigate to payment methods
         Alert.alert('Coming Soon', 'Payment methods will be available soon!');
         break;
       case 'travelHistory':
-        // TODO: Navigate to travel history
         Alert.alert('Coming Soon', 'Travel history will be available soon!');
         break;
       case 'savedRoutes':
-        // TODO: Navigate to saved routes
         Alert.alert('Coming Soon', 'Saved routes will be available soon!');
         break;
       case 'helpSupport':
-        // TODO: Navigate to help & support
         Alert.alert('Coming Soon', 'Help & support will be available soon!');
         break;
       default:
@@ -179,88 +221,68 @@ export default function ProfileScreen() {
   ];
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[staticStyles.container, dynamicStyles.container]}>
       <ScrollView 
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={staticStyles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.mainContent}>          
-          {/* Profile Card */}
-          <View style={[styles.profileCard, { 
-            backgroundColor: colors.card,
-            shadowColor: colorScheme === 'dark' ? colors.text : '#000'
-          }]}>
+        <View style={staticStyles.mainContent}>          
+          <View style={[staticStyles.profileCard, dynamicStyles.profileCard]}>
             <TouchableOpacity 
-              style={[styles.profilePictureContainer, { borderColor: colors.border }]} 
+              style={[staticStyles.profilePictureContainer, dynamicStyles.profilePictureContainer]} 
               onPress={pickImage}
               activeOpacity={0.8}
               disabled={isLoading}
             >
               <Image 
                 source={profileImage}
-                style={styles.profilePicture}
+                style={staticStyles.profilePicture}
                 contentFit="cover"
               />
-              <View style={[styles.cameraOverlay, { 
-                backgroundColor: colors.primary,
-                borderColor: colorScheme === 'dark' ? '#1c1c1e' : 'white'
-              }]}>
+              <View style={[staticStyles.cameraOverlay, dynamicStyles.cameraOverlay]}>
                 {isLoading ? (
-                  <Text style={styles.cameraIcon}>⏳</Text>
+                  <Text style={staticStyles.cameraIcon}>⏳</Text>
                 ) : (
-                  <Text style={styles.cameraIcon}>📷</Text>
+                  <Text style={staticStyles.cameraIcon}>📷</Text>
                 )}
               </View>
             </TouchableOpacity>
             
-            <Text style={[styles.profileTitle, { color: colors.text }]}>
+            <Text style={[staticStyles.profileTitle, dynamicStyles.profileTitle]}>
               {displayName}
             </Text>
-            <Text style={[styles.profileSubtitle, { 
-              color: colorScheme === 'dark' ? '#8E8E93' : '#666' 
-            }]}>
+            <Text style={[staticStyles.profileSubtitle, dynamicStyles.profileSubtitle]}>
               {displayEmail}
             </Text>
             
             {isLoading && (
-              <Text style={[styles.uploadingText, { color: colors.primary }]}>
+              <Text style={[staticStyles.uploadingText, dynamicStyles.uploadingText]}>
                 Uploading profile picture...
               </Text>
             )}
           </View>
 
-          {/* Profile Options */}
-          <View style={[
-            styles.profileOptions, 
-            { backgroundColor: colors.card },
-            Platform.select({
-              ios: { shadowColor: colorScheme === 'dark' ? colors.text : '#000' },
-              android: { elevation: 3 }
-            })
-          ]}>
+          <View style={[staticStyles.profileOptions, dynamicStyles.profileOptions]}>
             {profileOptions.map((option, index) => (
               <TouchableOpacity 
                 key={option.key}
-                style={[styles.optionItem, { 
-                  borderBottomColor: index === profileOptions.length - 1 ? 'transparent' : colors.border 
-                }]}
+                style={[
+                  staticStyles.optionItem, 
+                  index === profileOptions.length - 1 ? null : dynamicStyles.optionItemBorder
+                ]}
                 onPress={() => handleOptionPress(option.key)}
                 activeOpacity={0.7}
               >
-                <Text style={styles.optionIcon}>{option.icon}</Text>
-                <View style={styles.optionTextContainer}>
-                  <Text style={[styles.optionTitle, { color: colors.text }]}>
+                <Text style={staticStyles.optionIcon}>{option.icon}</Text>
+                <View style={staticStyles.optionTextContainer}>
+                  <Text style={[staticStyles.optionTitle, dynamicStyles.optionTitle]}>
                     {option.title}
                   </Text>
-                  <Text style={[styles.optionSubtitle, { 
-                    color: colorScheme === 'dark' ? '#8E8E93' : '#666' 
-                  }]}>
+                  <Text style={[staticStyles.optionSubtitle, dynamicStyles.optionSubtitle]}>
                     {option.subtitle}
                   </Text>
                 </View>
-                <Text style={[styles.chevron, { 
-                  color: colorScheme === 'dark' ? '#48484A' : '#C7C7CC' 
-                }]}>
+                <Text style={[staticStyles.chevron, dynamicStyles.chevron]}>
                   ›
                 </Text>
               </TouchableOpacity>
@@ -272,7 +294,8 @@ export default function ProfileScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+// Static styles
+const staticStyles = StyleSheet.create({
   container: { 
     flex: 1 
   },
