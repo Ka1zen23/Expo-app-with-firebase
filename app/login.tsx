@@ -149,7 +149,7 @@ const Page = () => {
         </View>
 
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Ionicons name="arrow-back" size={24} color="#333" />
+        <Ionicons name="arrow-back" size={24} color="#007bff" />
         <Text style={styles.backText}>Back</Text>
       </TouchableOpacity>
         </KeyboardAvoidingView>
@@ -201,3 +201,4 @@ const styles = StyleSheet.create({
 })
 
 export default Page;
+
