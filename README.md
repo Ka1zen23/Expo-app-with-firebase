@@ -56,7 +56,7 @@ npx expo run:ios
 
 ## 🔑 Firebase Setup
 
-###Install Firebase
+### Install Firebase
 
 ```bash
 npm install firebase
