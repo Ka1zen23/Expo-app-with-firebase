@@ -1,16 +1,52 @@
 import Colors from "@/constants/Colors";
 import { busRouteService } from "@/services/busService";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const colorScheme = useColorScheme();
-
-  const textColor = Colors[colorScheme ?? 'light'].text;
-  const borderColor = Colors[colorScheme ?? 'light'].border;
-  
 export default function AddRouteScreen() {
+  const colorScheme = useColorScheme();
+
+  const colors = useMemo(() => {
+    const scheme = colorScheme ?? 'light';
+    return {
+      text: Colors[scheme].text,
+      border: Colors[scheme].border,
+      background: Colors[scheme].background,
+      card: Colors[scheme].card || Colors[scheme].background,
+      secondary: colorScheme === 'dark' ? '#aaa' : '#555',
+      shadow: colorScheme === 'dark' ? Colors[scheme].text : '#000',
+    };
+  }, [colorScheme]);
+
+  const styles = useMemo(() => StyleSheet.create({
+    safeArea: { flex: 1 },
+    container: { flex: 1, padding: 20 },
+    mainTitle: { 
+      fontSize: 28, 
+      fontWeight: "bold", 
+      marginBottom: 20,
+      color: colors.text
+    },
+    input: {
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      paddingVertical: 15,
+      paddingHorizontal: 0,
+      fontSize: 16,
+      color: colors.text
+    },
+    addButton: {
+      marginTop: 20,
+      padding: 15,
+      borderRadius: 20,
+      alignItems: "center",
+      backgroundColor: "#5C6BC0",
+    },
+    buttonText: { color: "#fff", fontSize: 18, fontWeight: "600" },
+  }), [colors]);
+  
   const [routeNumber, setRouteNumber] = useState("");
   const [routeName, setRouteName] = useState("");
   const [startLocation, setStartLocation] = useState("");
@@ -58,25 +94,3 @@ export default function AddRouteScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safeArea: { flex: 1 },
-  container: { flex: 1, padding: 20 },
-  mainTitle: { fontSize: 28, fontWeight: "bold", marginBottom: 20 },
-  input: {
-    borderBottomWidth: 1,
-    borderBottomColor: borderColor,
-    paddingVertical: 15,
-    paddingHorizontal: 0,
-    fontSize: 16,
-    color: textColor
-  },
-  addButton: {
-    marginTop: 20,
-    padding: 15,
-    borderRadius: 20,
-    alignItems: "center",
-    backgroundColor: "#5C6BC0",
-  },
-  buttonText: { color: "#fff", fontSize: 18, fontWeight: "600" },
-});
