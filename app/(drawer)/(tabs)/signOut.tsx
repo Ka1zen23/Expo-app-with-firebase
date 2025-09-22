@@ -22,10 +22,11 @@ export default function SignOut() {
           },
           {
             text: 'Sign Out',
-            style: 'default',
+            style: 'destructive',
             onPress: async () => {
               try {
                 await FIREBASE_AUTH.signOut();
+                router.dismissAll()
                 router.replace('/');
               } catch (error) {
                 Alert.alert('Error', 'Failed to sign out. Please try again.');
@@ -34,11 +35,12 @@ export default function SignOut() {
           },
           {
             text: 'Sign Out and Delete Account',
-            style: 'default',
+            style: 'destructive',
             onPress: async () => {
               try {
                 await FIREBASE_AUTH.currentUser?.delete();
-                router.replace('/login');
+                router.dismissAll()
+                router.replace('/');
               } catch (error) {
                 Alert.alert('Error', 'Failed to delete account. Please try again.');
               }
