@@ -3,7 +3,7 @@ import { defaultStyles } from '@/constants/Styles'
 import { Ionicons } from '@expo/vector-icons'
 import { Link } from 'expo-router'
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const BottomLoginSheet = () => {
@@ -11,10 +11,12 @@ const BottomLoginSheet = () => {
   const { bottom }  = useSafeAreaInsets();
   return (
     <View style={[styles.container, { paddingBottom: bottom }]}>
+      {Platform.OS === 'ios' && (
       <TouchableOpacity style={[defaultStyles.btn, styles.btnLight]}>
         <Ionicons name="logo-apple" size={14} style={styles.btnIcon} />
         <Text style={styles.btnLightText}>Continue with Apple</Text>
       </TouchableOpacity>
+      )}
       <TouchableOpacity style={[defaultStyles.btn, styles.btnDark]}>
         <Ionicons name="logo-google" size={16} style={styles.btnIcon} color={'#fff'}/>
         <Text style={styles.btnDarkText}>Continue with Google</Text>
@@ -76,5 +78,6 @@ const styles = StyleSheet.create({
     borderColor: ColorPalette.grey,
   }
 })
+
 
 export default BottomLoginSheet
