@@ -1,20 +1,51 @@
 import Colors from "@/constants/Colors";
 import { BusRoute, busRouteService } from "@/services/busService";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, View, useColorScheme } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const colorScheme = useColorScheme();
-
-  const textColor = Colors[colorScheme ?? 'light'].text;
-  const borderColor = Colors[colorScheme ?? 'light'].border;
-  const backgroundColor = Colors[colorScheme ?? 'light'].background;
-  const cardColor = Colors[colorScheme ?? 'light'].card || backgroundColor;
-
-
 export default function RoutesScreen() {
+  const colorScheme = useColorScheme();
   const [routes, setRoutes] = useState<BusRoute[]>([]);
+
+  const colors = useMemo(() => {
+    const scheme = colorScheme ?? 'light';
+    return {
+      text: Colors[scheme].text,
+      border: Colors[scheme].border,
+      background: Colors[scheme].background,
+      card: Colors[scheme].card || Colors[scheme].background,
+      secondaryText: colorScheme === 'dark' ? '#aaa' : '#666',
+      shadow: colorScheme === 'dark' ? Colors[scheme].text : '#000',
+    };
+  }, [colorScheme]);
+
+  // Dynamic styles that depend on theme/colors
+  const dynamicStyles = useMemo(() => StyleSheet.create({
+    safeArea: {
+      backgroundColor: colors.background,
+    },
+    container: {
+      backgroundColor: colors.background,
+    },
+    mainTitle: {
+      color: colors.text,
+    },
+    routeContainer: {
+      backgroundColor: colors.card,
+      shadowColor: colors.shadow,
+    },
+    routeText: {
+      color: colors.text,
+    },
+    subText: {
+      color: colors.secondaryText,
+    },
+    emptyText: {
+      color: colors.secondaryText,
+    },
+  }), [colors]);
 
   useEffect(() => {
     const unsubscribe = busRouteService.subscribe((data) => setRoutes(data));
@@ -28,42 +59,54 @@ export default function RoutesScreen() {
     });
   };
 
+  const renderRouteItem = ({ item }: { item: BusRoute }) => (
+    <TouchableOpacity
+      style={[staticStyles.routeContainer, dynamicStyles.routeContainer]}
+      onPress={() => handleRoutePress(item)}
+    >
+      <Text style={[staticStyles.routeText, dynamicStyles.routeText]}>
+        {item.routeNumber} - {item.routeName}
+      </Text>
+      <Text style={[staticStyles.subText, dynamicStyles.subText]}>
+        {item.startLocation} → {item.endLocation} | ${item.fare}
+      </Text>
+    </TouchableOpacity>
+  );
+
+  const renderEmptyComponent = () => (
+    <Text style={[staticStyles.emptyText, dynamicStyles.emptyText]}>
+      No routes yet
+    </Text>
+  );
+
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <Text style={styles.mainTitle}>Bus Routes</Text>
+    <SafeAreaView style={[staticStyles.safeArea, dynamicStyles.safeArea]}>
+      <View style={[staticStyles.container, dynamicStyles.container]}>
+        <Text style={[staticStyles.mainTitle, dynamicStyles.mainTitle]}>
+          Bus Routes
+        </Text>
 
         <TouchableOpacity
-          style={styles.addButton}
+          style={staticStyles.addButton}
           onPress={() => router.push("/addRoute")}
         >
-          <Text style={styles.buttonText}>+ Add Route</Text>
+          <Text style={staticStyles.buttonText}>+ Add Route</Text>
         </TouchableOpacity>
 
         <FlatList
           data={routes}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.routeContainer}
-              onPress={() => handleRoutePress(item)}
-            >
-              <Text style={styles.routeText}>
-                {item.routeNumber} - {item.routeName}
-              </Text>
-              <Text style={styles.subText}>
-                {item.startLocation} → {item.endLocation} | ${item.fare}
-              </Text>
-            </TouchableOpacity>
-          )}
+          renderItem={renderRouteItem}
           keyExtractor={(item) => item.id}
-          ListEmptyComponent={<Text>No routes yet</Text>}
+          ListEmptyComponent={renderEmptyComponent}
+          showsVerticalScrollIndicator={false}
         />
       </View>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
+// Static styles that never change regardless of theme
+const staticStyles = StyleSheet.create({
   safeArea: { 
     flex: 1 
   },
@@ -77,7 +120,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold", 
     marginBottom: 10,
     alignSelf: 'center',
-    color: textColor
   },
   addButton: {
     padding: 12,
@@ -93,9 +135,12 @@ const styles = StyleSheet.create({
   },
   routeContainer: {
     padding: 15,
-    backgroundColor: "#f2f2f2",
     borderRadius: 10,
     marginVertical: 8,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   routeText: { 
     fontSize: 18, 
@@ -103,7 +148,12 @@ const styles = StyleSheet.create({
   },
   subText: { 
     fontSize: 14, 
-    color: "#666", 
     marginTop: 5 
+  },
+  emptyText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 50,
+    fontFamily: 'Outfit-Regular',
   },
 });
