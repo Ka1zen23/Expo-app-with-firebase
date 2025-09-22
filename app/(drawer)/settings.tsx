@@ -17,29 +17,37 @@ import {
 } from "react-native";
 
 export default function SettingsScreen() {
-  const colorScheme = useColorScheme();
+  const systemColorScheme = useColorScheme();
+  
+  const [settings, setSettings] = useState<UserSettings>({
+    allowNotifications: false,
+    darkMode: false,
+  });
+
+  // Use settings.darkMode if explicitly set, otherwise fall back to system preference
+  const activeColorScheme = settings.darkMode === true ? "dark" : 
+                            settings.darkMode === false ? "light" :
+                            (systemColorScheme ?? "light");
 
   const colors = useMemo(
     () => ({
-      border: Colors[colorScheme ?? "light"].border,
-      primary: Colors[colorScheme ?? "light"].primary,
-      text: Colors[colorScheme ?? "light"].text,
-      background: Colors[colorScheme ?? "light"].background,
+      border: Colors[activeColorScheme].border,
+      primary: Colors[activeColorScheme].primary,
+      text: Colors[activeColorScheme].text,
+      background: Colors[activeColorScheme].background,
       card:
-        Colors[colorScheme ?? "light"].card ||
-        Colors[colorScheme ?? "light"].background,
+        Colors[activeColorScheme].card ||
+        Colors[activeColorScheme].background,
     }),
-    [colorScheme]
+    [activeColorScheme]
   );
-
-  const [settings, setSettings] = useState<UserSettings>({
-    allowNotifications: false,
-  });
 
   // Load & subscribe to Firestore settings
   useEffect(() => {
     const unsub = userSettingsService.subscribe((snap) => {
-      if (snap) setSettings(snap);
+      if (snap) {
+        setSettings(snap);
+      }
     });
     return unsub;
   }, []);
@@ -53,6 +61,8 @@ export default function SettingsScreen() {
       } catch (err) {
         console.error(err);
         Alert.alert("Error", "Failed to update settings");
+        // Revert the local state change on error
+        setSettings((prev) => ({ ...prev, [field]: !value }));
       }
     },
     []
@@ -101,7 +111,7 @@ export default function SettingsScreen() {
                                 <Text
                                 style={[
                                     styles.optionSubtitle,
-                                    { color: colorScheme === "dark" ? "#8E8E93" : "#666" },
+                                    { color: activeColorScheme === "dark" ? "#8E8E93" : "#666" },
                                 ]}
                                 >
                                 Receive notifications about bus routes
@@ -133,16 +143,16 @@ export default function SettingsScreen() {
                                 <Text
                                 style={[
                                     styles.optionSubtitle,
-                                    { color: colorScheme === "dark" ? "#8E8E93" : "#666" },
+                                    { color: activeColorScheme === "dark" ? "#8E8E93" : "#666" },
                                 ]}
                                 >
-                                Toggle Dark Mode on or off
+                                Override system theme preference
                                 </Text>
                             </View>
                             <Switch
                                 trackColor={{ false: "#767577", true: colors.primary }}
                                 thumbColor={Platform.OS === "android" ? "#fff" : undefined}
-                                value={settings.darkMode} 
+                                value={settings.darkMode ?? false} 
                                 onValueChange={(value) =>
                                 handleToggle("darkMode", value)
                                 }
@@ -174,7 +184,7 @@ export default function SettingsScreen() {
                         <Text
                         style={[
                             styles.optionSubtitle,
-                            { color: colorScheme === "dark" ? "#8E8E93" : "#666" },
+                            { color: activeColorScheme === "dark" ? "#8E8E93" : "#666" },
                         ]}
                         >
                         App info, version and terms
@@ -183,7 +193,7 @@ export default function SettingsScreen() {
                     <Text
                         style={[
                         styles.chevron,
-                        { color: colorScheme === "dark" ? "#48484A" : "#C7C7CC" },
+                        { color: activeColorScheme === "dark" ? "#48484A" : "#C7C7CC" },
                         ]}
                     >
                         ›
