@@ -37,6 +37,7 @@ An Expo-based React Native app for real-time bus tracking, booking, and routing 
 ```bash
 git clone https://github.com/Ka1zen23/Expo-app-with-firebase.git
 cd Expo-app-with-firebase
+npm install expo
 npx expo install
 npx expo prebuild
 ```
