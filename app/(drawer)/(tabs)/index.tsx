@@ -1,7 +1,7 @@
 // app/(drawer)/(tabs)/index.tsx
 import Colors from '@/constants/Colors';
 import { router } from 'expo-router';
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -15,10 +15,44 @@ import MapView from 'react-native-maps';
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
 
-  const textColor = Colors[colorScheme ?? 'light'].text;
-  const borderColor = Colors[colorScheme ?? 'light'].border;
-  const backgroundColor = Colors[colorScheme ?? 'light'].background;
-  const cardColor = Colors[colorScheme ?? 'light'].card || backgroundColor;
+  const colors = useMemo(() => {
+    const scheme = colorScheme ?? 'light';
+    return {
+      text: Colors[scheme].text,
+      border: Colors[scheme].border,
+      background: Colors[scheme].background,
+      card: Colors[scheme].card || Colors[scheme].background,
+      secondary: colorScheme === 'dark' ? '#aaa' : '#555',
+      shadow: colorScheme === 'dark' ? Colors[scheme].text : '#000',
+    };
+  }, [colorScheme]);
+
+  // dynamic styles
+  const dynamicStyles = useMemo(() => StyleSheet.create({
+    container: {
+      backgroundColor: colors.background,
+    },
+    greeting: {
+      color: colors.text,
+    },
+    subGreeting: {
+      color: colors.text,
+    },
+    map: {
+      borderColor: colors.border,
+    },
+    featureCard: {
+      backgroundColor: colors.card,
+      borderColor: colors.border,
+      shadowColor: colors.shadow,
+    },
+    featureTitle: {
+      color: colors.text,
+    },
+    featureDescription: {
+      color: colors.secondary,
+    },
+  }), [colors]);
 
   const handleFeaturePress = (feature: string) => {
     console.log(`Feature pressed: ${feature}`);
@@ -36,21 +70,21 @@ export default function HomeScreen() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor }]}>
+    <View style={[styles.container, dynamicStyles.container]}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         {/* Greeting Section */}
         <View style={styles.greetingContainer}>
-          <Text style={[styles.greeting, { color: textColor }]}>Welcome back 👋</Text>
-          <Text style={[styles.subGreeting, { color: textColor }]}>Find your next bus journey</Text>
+          <Text style={[styles.greeting, dynamicStyles.greeting]}>Welcome back 👋</Text>
+          <Text style={[styles.subGreeting, dynamicStyles.subGreeting]}>Find your next bus journey</Text>
         </View>
 
         {/* Map Section */}
         <View style={styles.mapContainer}>
           <MapView
-            style={[styles.map, { borderColor }]}
+            style={[styles.map, dynamicStyles.map]}
             initialRegion={{
               latitude: 4.977386714102847,
               longitude: 114.89991961316908,
@@ -73,21 +107,12 @@ export default function HomeScreen() {
           ].map((item) => (
             <TouchableOpacity
               key={item.key}
-              style={[
-                styles.featureCard,
-                { 
-                  backgroundColor: cardColor, 
-                  borderColor, 
-                  shadowColor: colorScheme === 'dark' ? textColor : '#000'
-                },
-              ]}
+              style={[styles.featureCard, dynamicStyles.featureCard]}
               onPress={() => handleFeaturePress(item.key)}
               activeOpacity={0.7}
             >
-              <Text style={[styles.featureTitle, { color: textColor }]}>{item.label}</Text>
-              <Text style={[styles.featureDescription, { 
-                color: colorScheme === 'dark' ? '#aaa' : '#555' 
-              }]}>
+              <Text style={[styles.featureTitle, dynamicStyles.featureTitle]}>{item.label}</Text>
+              <Text style={[styles.featureDescription, dynamicStyles.featureDescription]}>
                 {item.desc}
               </Text>
             </TouchableOpacity>
@@ -98,6 +123,7 @@ export default function HomeScreen() {
   );
 }
 
+// Static styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
