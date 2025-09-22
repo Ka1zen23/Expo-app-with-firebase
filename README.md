@@ -56,6 +56,12 @@ npx expo run:ios
 
 ## 🔑 Firebase Setup
 
+###Install Firebase
+
+```bash
+npm install firebase
+```
+
 ### Generate Firebase Credentials  
 
 1. Go to [Firebase Console](https://firebase.google.com/).
