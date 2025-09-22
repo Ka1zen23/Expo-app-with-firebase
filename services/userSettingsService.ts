@@ -18,6 +18,7 @@ const SETTINGS_COLLECTION = "userSettings";
 
 const defaultSettings: UserSettings = {
   allowNotifications: false,
+  darkMode: false,
 };
 
 export const userSettingsService = {
