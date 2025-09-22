@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Bus4BN-firebase",
-    "slug": "Bus4BN-firebase",
+    "name": "Expo-app-with-firebase",
+    "slug": "Expo-app-with-firebase",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/splash-icon.png",
+      "image": "./assets/images/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -18,15 +18,15 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/logo.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.buangtabiat.Bus4BNfirebase",
+      "package": "com.example.yourapp",
       "config" : {
         "googleMaps": {
-          "apiKey": "AIzaSyD1bX4Yk3a0b2rYHkT8n0cXy3K5kU5v1g"
+          "apiKey": "YOUR_GOOGLE_MAPS_API_KEY"
         }
       }
     },
@@ -44,7 +44,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "92dfd914-34d0-44ec-9b5b-04727afc3ed8"
+        "projectId": "YOUR_EAS_PROJECT_ID"
       }
     }
   }
